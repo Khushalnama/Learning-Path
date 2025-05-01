@@ -37,12 +37,12 @@ const Login = () => {
             Forget password?
           </p>
         </div>
-        <button
+        <a href="/student"
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
-        >
+          className="w-full px-35 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+        > 
           Sign In
-        </button>
+        </a>
       </form>
     </div>
   );
