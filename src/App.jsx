@@ -3,7 +3,7 @@ import Login from './Pages/Login';
 import Signup from './Pages/Signup';
 import Owner from './Pages/owner';
 import { useState } from "react";
-import "./App.css";
+import "./Index.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./components/Home";
