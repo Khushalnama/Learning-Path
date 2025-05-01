@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './Pages/Login';
 import Signup from './Pages/Signup';
 import Owner from './Pages/owner';
+import Student from './Pages/Student';
 import { useState } from "react";
 import "./Index.css";
 import Navbar from "./components/Navbar";
@@ -20,6 +21,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/owner" element={<Owner />} />
+          <Route path="/student" element={<Student />} />
         </Routes>
       </div>
       <Footer />
