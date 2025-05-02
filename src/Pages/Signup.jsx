@@ -15,7 +15,8 @@ const Signup = () => {
     e.preventDefault();
     setMessage('');
     try {
-      const response = await fetch('/api/signup', {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || '/api';
+      const response = await fetch(`${backendUrl}/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
