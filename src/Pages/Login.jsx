@@ -56,12 +56,12 @@ const Login = () => {
             Forget password?
           </p>
         </div>
-        <button
-          type="submit"
-          className="w-full px-35 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
-        >
+        <a href="./Student" type="submit"
+          className="w-full px-35 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
+          
+      
           Sign In
-        </button>
+        </a>
       </form>
       {message && <p className="mt-4 text-center text-red-600">{message}</p>}
     </div>
