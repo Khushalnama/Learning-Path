@@ -68,7 +68,7 @@ const Login = () => {
         <a
           href="./Student"
           type="submit"
-          className="w-full px-35 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+          className="w-full px-52 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
         >
           Sign In
         </a>
