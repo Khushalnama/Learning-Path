@@ -10,23 +10,8 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
-    try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || '/api';
-      const response = await fetch(`${backendUrl}/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await response.json();
-      if (response.ok) {
-        setMessage('Login successful!');
-        navigate('/student');
-      } else {
-        setMessage(data.message || 'Login failed');
-      }
-    } catch (error) {
-      setMessage('Error connecting to server');
-    }
+    // Removed backend API call as per request to delete backend in frontend
+    setMessage('Login functionality is disabled.');
   };
 
   return (

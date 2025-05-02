@@ -14,22 +14,8 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
-    try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || '/api';
-      const response = await fetch(`${backendUrl}/signup`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await response.json();
-      if (response.ok) {
-        setMessage('Signup successful! You can now login.');
-      } else {
-        setMessage(data.message || 'Signup failed');
-      }
-    } catch (error) {
-      setMessage('Error connecting to server');
-    }
+    // Removed backend API call as per request to delete backend in frontend
+    setMessage('Signup functionality is disabled.');
   };
 
   return (
