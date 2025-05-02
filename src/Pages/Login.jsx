@@ -17,7 +17,7 @@ const Login = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
       <h2 className="text-2xl font-bold mb-6">Sign In</h2>
-      <form onSubmit={handleSubmit} className="w-full max-w-sm bg-white p-6 rounded-lg shadow-md">
+      <form onSubmit={handleSubmit} className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg bg-white p-6 rounded-lg shadow-md">
         <button
           type="button"
           className="w-full mb-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white py-2 rounded-md hover:from-cyan-600 hover:to-blue-600 transition"
@@ -56,12 +56,12 @@ const Login = () => {
             Forget password?
           </p>
         </div>
-        <a href="./Student" type="submit"
-          className="w-full px-35 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
-          
-      
+        <button
+          type="submit"
+          className="w-full px-35 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+        >
           Sign In
-        </a>
+        </button>
       </form>
       {message && <p className="mt-4 text-center text-red-600">{message}</p>}
     </div>
