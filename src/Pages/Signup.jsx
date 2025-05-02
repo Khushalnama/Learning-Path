@@ -1,17 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
   const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
 
   const handleSignInClick = () => {
     navigate('/login');
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setMessage('');
+    try {
+      const response = await fetch('/api/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setMessage('Signup successful! You can now login.');
+      } else {
+        setMessage(data.message || 'Signup failed');
+      }
+    } catch (error) {
+      setMessage('Error connecting to server');
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
       <h2 className="text-2xl font-bold mb-6">Sign Up</h2>
-      <form className="w-full max-w-sm bg-white p-6 rounded-lg shadow-md">
+      <form onSubmit={handleSubmit} className="w-full max-w-sm bg-white p-6 rounded-lg shadow-md">
         <div className="mb-4">
           <label htmlFor="email" className="block text-gray-700 font-semibold mb-2">
             Email address
@@ -19,8 +42,11 @@ const Signup = () => {
           <input
             type="email"
             id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter your email"
+            required
           />
         </div>
         <div className="mb-4">
@@ -30,8 +56,11 @@ const Signup = () => {
           <input
             type="password"
             id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter your password"
+            required
           />
         </div>
         <button
@@ -41,6 +70,7 @@ const Signup = () => {
           Sign Up
         </button>
       </form>
+      {message && <p className="mt-4 text-center text-red-600">{message}</p>}
       <p className='p-2 font-bold'>If already register??</p>
       <button
         type="button"
