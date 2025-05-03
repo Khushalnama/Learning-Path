@@ -1,314 +1,476 @@
 import React, { useState, useEffect } from 'react';
 import ReactPlayer from 'react-player';
+import { FiSearch, FiBookmark, FiCheckCircle, FiMessageSquare, FiStar, FiPlay, FiLock } from 'react-icons/fi';
+import { RiProgress4Line } from 'react-icons/ri';
 import course1 from '../assets/course_1.png';
-import course2 from '../assets/course_2.png';
-import course3 from '../assets/course_3.png';
-import course4 from '../assets/course_4.png';
 
-const allCourses = [
-  {
-    id: 1,
-    title: 'Introduction to React',
-    image: course1,
-    description: 'Learn the basics of React.js and build interactive UIs.',
-    topic: 'React',
-    price: 0,
-    lessons: [
-      { id: 1, title: 'React Basics', videoUrl: 'https://www.youtube.com/watch?v=Ke90Tje7VS0' },
-      { id: 2, title: 'React State', videoUrl: 'https://www.youtube.com/watch?v=35lXWvCuM8o' },
-    ],
-  },
-  {
-    id: 2,
-    title: 'Advanced JavaScript',
-    image: course2,
-    description: 'Deep dive into JavaScript concepts and best practices.',
-    topic: 'JavaScript',
-    price: 49,
-    lessons: [
-      { id: 1, title: 'Closures', videoUrl: 'https://www.youtube.com/watch?v=1JsJx1x35c0' },
-      { id: 2, title: 'Async/Await', videoUrl: 'https://www.youtube.com/watch?v=V_Kr9OSfDeU' },
-    ],
-  },
-  {
-    id: 3,
-    title: 'UI/UX Design Fundamentals',
-    image: course3,
-    description: 'Understand the principles of user interface and experience design.',
-    topic: 'Design',
-    price: 0,
-    lessons: [
-      { id: 1, title: 'Design Principles', videoUrl: 'https://www.youtube.com/watch?v=Ovj4hFxko7c' },
-      { id: 2, title: 'User Research', videoUrl: 'https://www.youtube.com/watch?v=Q6p6k0b6v6k' },
-    ],
-  },
-  {
-    id: 4,
-    title: 'Web Development Bootcamp',
-    image: course4,
-    description: 'Become a full-stack web developer with hands-on projects.',
-    topic: 'Web Development',
-    price: 99,
-    lessons: [
-      { id: 1, title: 'HTML & CSS', videoUrl: 'https://www.youtube.com/watch?v=UB1O30fR-EE' },
-      { id: 2, title: 'JavaScript Basics', videoUrl: 'https://www.youtube.com/watch?v=W6NZfCO5SIk' },
-    ],
-  },
-];
-
-const topics = ['All', 'React', 'JavaScript', 'Design', 'Web Development'];
-
-const StudentNew = () => {
+const Student = () => {
+  // State for active tab
+  const [activeTab, setActiveTab] = useState('all');
+  // State for search term
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedTopic, setSelectedTopic] = useState('All');
-  const [filteredCourses, setFilteredCourses] = useState(allCourses);
-  const [enrolledCourses, setEnrolledCourses] = useState([]);
+  // State for selected course
   const [selectedCourse, setSelectedCourse] = useState(null);
-  const [currentLesson, setCurrentLesson] = useState(null);
-  const [lessonProgress, setLessonProgress] = useState({});
-  const [comments, setComments] = useState({});
-  const [ratings, setRatings] = useState({});
+  // State for current video URL
+  const [currentVideo, setCurrentVideo] = useState('');
+  // State for comments
+  const [comment, setComment] = useState('');
+  // State for course ratings
+  const [rating, setRating] = useState(0);
+  // State for enrolled courses
+  const [enrolledCourses, setEnrolledCourses] = useState([]);
+  // State for course progress
+  const [courseProgress, setCourseProgress] = useState({});
 
-  useEffect(() => {
-    let filtered = allCourses;
+  // Sample course data
+  const courses = [
+    {
+      id: 1,
+      title: 'Introduction to React',
+      instructor: 'Jane Smith',
+      category: 'Web Development',
+      price: 0,
+      thumbnail: 'https://via.placeholder.com/300x200?text=React',
+      rating: 4.5,
+      enrolled: true,
+      lessons: [
+        { id: 1, title: 'React Basics', duration: '12:34', videoUrl: 'https://www.youtube.com/watch?v=w7ejDZ8SWv8', completed: true },
+        { id: 2, title: 'Components & Props', duration: '15:20', videoUrl: 'https://www.youtube.com/watch?v=w7ejDZ8SWv8', completed: true },
+        { id: 3, title: 'State & Lifecycle', duration: '18:45', videoUrl: 'https://www.youtube.com/watch?v=w7ejDZ8SWv8', completed: false },
+      ]
+    },
+    {
+      id: 2,
+      title: 'Advanced JavaScript',
+      instructor: 'John Doe',
+      category: 'Programming',
+      price: 49.99,
+      thumbnail: 'https://via.placeholder.com/300x200?text=JavaScript',
+      rating: 4.8,
+      enrolled: true,
+      lessons: [
+        { id: 1, title: 'ES6 Features', duration: '22:10', videoUrl: 'https://www.youtube.com/watch?v=w7ejDZ8SWv8', completed: true },
+        { id: 2, title: 'Async/Await', duration: '19:30', videoUrl: 'https://www.youtube.com/watch?v=w7ejDZ8SWv8', completed: false },
+        { id: 3, title: 'Design Patterns', duration: '25:15', videoUrl: 'https://www.youtube.com/watch?v=w7ejDZ8SWv8', completed: false },
+      ]
+    },
+    {
+      id: 3,
+      title: 'UI/UX Design Fundamentals',
+      instructor: 'Alex Johnson',
+      category: 'Design',
+      price: 29.99,
+      thumbnail: 'https://via.placeholder.com/300x200?text=UI/UX',
+      rating: 4.3,
+      enrolled: false,
+      lessons: [
+        { id: 1, title: 'Design Principles', duration: '14:25', videoUrl: 'https://www.youtube.com/watch?v=w7ejDZ8SWv8', completed: false },
+        { id: 2, title: 'Color Theory', duration: '16:40', videoUrl: 'https://www.youtube.com/watch?v=w7ejDZ8SWv8', completed: false },
+      ]
+    },
+    {
+      id: 4,
+      title: 'Python for Beginners',
+      instructor: 'Sarah Williams',
+      category: 'Programming',
+      price: 0,
+      thumbnail: 'https://via.placeholder.com/300x200?text=Python',
+      rating: 4.7,
+      enrolled: false,
+      lessons: [
+        { id: 1, title: 'Python Basics', duration: '20:00', videoUrl: 'https://www.youtube.com/watch?v=w7ejDZ8SWv8', completed: false },
+        { id: 2, title: 'Functions & Modules', duration: '18:15', videoUrl: 'https://www.youtube.com/watch?v=w7ejDZ8SWv8', completed: false },
+      ]
+    },
+  ];
 
-    if (selectedTopic !== 'All') {
-      filtered = filtered.filter((course) => course.topic === selectedTopic);
-    }
+  // Filter courses based on active tab and search term
+  const filteredCourses = courses.filter(course => {
+    const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         course.instructor.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    if (activeTab === 'all') return matchesSearch;
+    if (activeTab === 'free') return course.price === 0 && matchesSearch;
+    if (activeTab === 'enrolled') return course.enrolled && matchesSearch;
+    return course.category.toLowerCase() === activeTab.toLowerCase() && matchesSearch;
+  });
 
-    if (searchTerm.trim() !== '') {
-      filtered = filtered.filter((course) =>
-        course.title.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    setFilteredCourses(filtered);
-  }, [searchTerm, selectedTopic]);
-
-  const handleEnroll = (course) => {
-    if (!enrolledCourses.find((c) => c.id === course.id)) {
-      setEnrolledCourses([...enrolledCourses, course]);
-      alert(`Enrolled in course: ${course.title}`);
-    } else {
-      alert(`Already enrolled in course: ${course.title}`);
-    }
+  // Calculate progress for a course
+  const calculateProgress = (courseId) => {
+    const course = courses.find(c => c.id === courseId);
+    if (!course) return 0;
+    
+    const completedLessons = course.lessons.filter(lesson => lesson.completed).length;
+    return Math.round((completedLessons / course.lessons.length) * 100);
   };
 
-  const handleSelectCourse = (course) => {
+  // Handle course selection
+  const handleCourseSelect = (course) => {
     setSelectedCourse(course);
-    setCurrentLesson(course.lessons[0]);
+    if (course.lessons.length > 0) {
+      setCurrentVideo(course.lessons[0].videoUrl);
+    }
   };
 
-  const handleLessonComplete = (lessonId) => {
-    setLessonProgress((prev) => ({ ...prev, [lessonId]: true }));
+  // Handle lesson selection
+  const handleLessonSelect = (lesson) => {
+    setCurrentVideo(lesson.videoUrl);
   };
 
-  const handleAddComment = (lessonId, comment) => {
-    setComments((prev) => {
-      const lessonComments = prev[lessonId] || [];
-      return { ...prev, [lessonId]: [...lessonComments, comment] };
+  // Handle marking lesson as complete
+  const toggleLessonComplete = (courseId, lessonId) => {
+    const updatedCourses = courses.map(course => {
+      if (course.id === courseId) {
+        const updatedLessons = course.lessons.map(lesson => {
+          if (lesson.id === lessonId) {
+            return { ...lesson, completed: !lesson.completed };
+          }
+          return lesson;
+        });
+        return { ...course, lessons: updatedLessons };
+      }
+      return course;
     });
+    
+    // In a real app, you would update the state or make an API call here
+    console.log('Updated courses:', updatedCourses);
   };
 
-  const handleRateCourse = (courseId, rating) => {
-    setRatings((prev) => ({ ...prev, [courseId]: rating }));
+  // Handle course enrollment
+  const handleEnroll = (courseId) => {
+    // In a real app, you would make an API call here
+    alert(`Enrolled in course ${courseId}`);
+    setEnrolledCourses([...enrolledCourses, courseId]);
   };
+
+  // Handle comment submission
+  const handleCommentSubmit = (e) => {
+    e.preventDefault();
+    if (comment.trim() && selectedCourse) {
+      // In a real app, you would make an API call here
+      alert(`Comment submitted for ${selectedCourse.title}: ${comment}`);
+      setComment('');
+    }
+  };
+
+  // Handle rating submission
+  const handleRatingSubmit = (e) => {
+    e.preventDefault();
+    if (rating > 0 && selectedCourse) {
+      // In a real app, you would make an API call here
+      alert(`Rating submitted for ${selectedCourse.title}: ${rating} stars`);
+      setRating(0);
+    }
+  };
+
+  // Get unique categories for filter tabs
+  const categories = [...new Set(courses.map(course => course.category))];
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Browse Courses</h1>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+          <h1 className="text-2xl font-bold text-gray-900">Learning Platform</h1>
+        </div>
+      </header>
 
-      {/* Filters */}
-      <div className="flex flex-wrap gap-4 mb-6">
-        <input
-          type="text"
-          placeholder="Search courses..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="border border-gray-300 rounded px-4 py-2 flex-grow"
-        />
-        <select
-          value={selectedTopic}
-          onChange={(e) => setSelectedTopic(e.target.value)}
-          className="border border-gray-300 rounded px-4 py-2"
-        >
-          {topics.map((topic) => (
-            <option key={topic} value={topic}>
-              {topic}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Course List */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {filteredCourses.map((course) => {
-          const isEnrolled = enrolledCourses.find((c) => c.id === course.id);
-          const rating = ratings[course.id] || 0;
-          return (
-            <div
-              key={course.id}
-              className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
-            >
-              <img src={course.image} alt={course.title} className="w-full h-40 object-cover" />
-              <div className="p-4">
-                <h2 className="text-xl font-semibold mb-2">{course.title}</h2>
-                <p className="text-gray-600 mb-2">{course.description}</p>
-                <p className="text-gray-700 font-semibold mb-2">
-                  Price: {course.price === 0 ? 'Free' : `$${course.price}`}
-                </p>
-                <button
-                  className={`px-4 py-2 rounded text-white ${
-                    isEnrolled ? 'bg-gray-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'
-                  } transition-colors duration-300`}
-                  onClick={() => handleEnroll(course)}
-                  disabled={isEnrolled}
-                >
-                  {isEnrolled ? 'Enrolled' : 'Enroll'}
-                </button>
-                {isEnrolled && (
-                  <button
-                    className="mt-2 px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 transition-colors duration-300"
-                    onClick={() => handleSelectCourse(course)}
-                  >
-                    Start Learning
-                  </button>
-                )}
-                <div className="mt-2">
-                  <p>Rating: {rating} / 5</p>
+      <main className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Left sidebar - Course list */}
+          <div className="lg:w-1/3">
+            <div className="bg-white rounded-lg shadow p-4 mb-6">
+              <div className="relative mb-4">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FiSearch className="text-gray-400" />
                 </div>
+                <input
+                  type="text"
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  placeholder="Search courses..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+
+              {/* Filter tabs */}
+              <div className="flex flex-wrap gap-2 mb-4 overflow-x-auto pb-2">
+                <button
+                  onClick={() => setActiveTab('all')}
+                  className={`px-3 py-1 rounded-full text-sm ${activeTab === 'all' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'}`}
+                >
+                  All
+                </button>
+                <button
+                  onClick={() => setActiveTab('free')}
+                  className={`px-3 py-1 rounded-full text-sm ${activeTab === 'free' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'}`}
+                >
+                  Free
+                </button>
+                <button
+                  onClick={() => setActiveTab('enrolled')}
+                  className={`px-3 py-1 rounded-full text-sm ${activeTab === 'enrolled' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'}`}
+                >
+                  My Courses
+                </button>
+                {categories.map(category => (
+                  <button
+                    key={category}
+                    onClick={() => setActiveTab(category)}
+                    className={`px-3 py-1 rounded-full text-sm ${activeTab === category ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'}`}
+                  >
+                    {category}
+                  </button>
+                ))}
               </div>
             </div>
-          );
-        })}
-      </div>
 
-      {/* Course Player and Details */}
-      {selectedCourse && currentLesson && (
-        <div className="mt-10 bg-white p-6 rounded shadow">
-          <h2 className="text-2xl font-bold mb-4">{selectedCourse.title}</h2>
-          <h3 className="text-xl mb-2">{currentLesson.title}</h3>
-          <ReactPlayer
-            url={currentLesson.videoUrl}
-            controls
-            width="100%"
-            height="360px"
-            onEnded={() => handleLessonComplete(currentLesson.id)}
-          />
-          <div className="mt-4">
-            <h4 className="font-semibold mb-2">Lessons Progress</h4>
-            <ul>
-              {selectedCourse.lessons.map((lesson) => (
-                <li key={lesson.id} className="flex items-center mb-1">
-                  <input
-                    type="checkbox"
-                    checked={!!lessonProgress[lesson.id]}
-                    readOnly
-                    className="mr-2"
-                  />
-                  {lesson.title}
-                </li>
-              ))}
-            </ul>
+            {/* Course list */}
+            <div className="bg-white rounded-lg shadow overflow-hidden">
+              <div className="divide-y divide-gray-200">
+                {filteredCourses.length > 0 ? (
+                  filteredCourses.map(course => (
+                    <div 
+                      key={course.id} 
+                      className={`p-4 hover:bg-gray-50 cursor-pointer ${selectedCourse?.id === course.id ? 'bg-blue-50' : ''}`}
+                      onClick={() => handleCourseSelect(course)}
+                    >
+                      <div className="flex items-start">
+                        <div className="flex-shrink-0 h-16 w-16 rounded-md overflow-hidden">
+                          <img className="h-full w-full object-cover" src={course1} alt="" />
+                        </div>
+                        <div className="ml-4 flex-1">
+                          <div className="flex items-center justify-between">
+                            <h3 className="text-sm font-medium text-gray-900">{course.title}</h3>
+                            {course.enrolled && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                                Enrolled
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-sm text-gray-500">{course.instructor}</p>
+                          <div className="mt-1 flex items-center justify-between">
+                            <div className="flex items-center">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <FiStar
+                                  key={star}
+                                  className={`h-4 w-4 ${star <= Math.round(course.rating) ? 'text-yellow-400' : 'text-gray-300'}`}
+                                />
+                              ))}
+                              <span className="ml-1 text-xs text-gray-500">{course.rating}</span>
+                            </div>
+                            <span className={`text-sm font-medium ${course.price === 0 ? 'text-green-600' : 'text-gray-900'}`}>
+                              {course.price === 0 ? 'Free' : `$${course.price}`}
+                            </span>
+                          </div>
+                          {course.enrolled && (
+                            <div className="mt-2">
+                              <div className="flex items-center">
+                                <RiProgress4Line className="text-blue-500 mr-2" />
+                                <div className="w-full bg-gray-200 rounded-full h-2">
+                                  <div 
+                                    className="bg-blue-600 h-2 rounded-full" 
+                                    style={{ width: `${calculateProgress(course.id)}%` }}
+                                  ></div>
+                                </div>
+                                <span className="ml-2 text-xs text-gray-500">{calculateProgress(course.id)}%</span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="p-4 text-center text-gray-500">
+                    No courses found matching your criteria.
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
 
-          {/* Comments Section */}
-          <CommentsSection
-            lessonId={currentLesson.id}
-            comments={comments[currentLesson.id] || []}
-            onAddComment={handleAddComment}
-          />
+          {/* Right content area - Course details */}
+          <div className="lg:w-2/3">
+            {selectedCourse ? (
+              <div className="bg-white rounded-lg shadow overflow-hidden">
+                {/* Course header */}
+                <div className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h2 className="text-xl font-bold text-gray-900">{selectedCourse.title}</h2>
+                      <p className="text-sm text-gray-500">Instructor: {selectedCourse.instructor}</p>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="flex items-center mr-4">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <FiStar
+                            key={star}
+                            className={`h-5 w-5 ${star <= Math.round(selectedCourse.rating) ? 'text-yellow-400' : 'text-gray-300'}`}
+                          />
+                        ))}
+                        <span className="ml-1 text-sm text-gray-500">{selectedCourse.rating}</span>
+                      </div>
+                      {!selectedCourse.enrolled ? (
+                        <button
+                          onClick={() => handleEnroll(selectedCourse.id)}
+                          className={`px-4 py-2 rounded-md text-sm font-medium ${selectedCourse.price === 0 ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'} text-white`}
+                        >
+                          {selectedCourse.price === 0 ? 'Enroll for Free' : `Enroll for $${selectedCourse.price}`}
+                        </button>
+                      ) : (
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                          Enrolled
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <p className="mt-4 text-gray-600">{selectedCourse.description || 'No description available.'}</p>
+                </div>
 
-          {/* Rating Section */}
-          <RatingSection
-            courseId={selectedCourse.id}
-            rating={ratings[selectedCourse.id] || 0}
-            onRate={handleRateCourse}
-          />
+                {/* Video player */}
+                <div className="bg-black">
+                  <div className="aspect-w-16 aspect-h-9">
+                    <ReactPlayer
+                      url={currentVideo}
+                      width="100%"
+                      height="100%"
+                      controls={true}
+                    />
+                  </div>
+                </div>
+
+                {/* Lessons list */}
+                <div className="p-6">
+                  <h3 className="text-lg font-medium text-gray-900 mb-4">Lessons</h3>
+                  <div className="space-y-2">
+                    {selectedCourse.lessons.map(lesson => (
+                      <div 
+                        key={lesson.id} 
+                        className={`p-3 rounded-md border ${currentVideo === lesson.videoUrl ? 'border-blue-300 bg-blue-50' : 'border-gray-200'} hover:bg-gray-50 cursor-pointer`}
+                        onClick={() => handleLessonSelect(lesson)}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleLessonComplete(selectedCourse.id, lesson.id);
+                              }}
+                              className="mr-3"
+                            >
+                              {lesson.completed ? (
+                                <FiCheckCircle className="h-5 w-5 text-green-500" />
+                              ) : (
+                                <div className="h-5 w-5 rounded-full border-2 border-gray-300"></div>
+                              )}
+                            </button>
+                            <div>
+                              <h4 className="text-sm font-medium text-gray-900">{lesson.title}</h4>
+                              <p className="text-xs text-gray-500">{lesson.duration}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center">
+                            {!selectedCourse.enrolled && (
+                              <FiLock className="h-4 w-4 text-gray-400 mr-2" />
+                            )}
+                            <FiPlay className="h-4 w-4 text-blue-500" />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Comments section */}
+                <div className="p-6 border-t border-gray-200">
+                  <h3 className="text-lg font-medium text-gray-900 mb-4">Comments</h3>
+                  <form onSubmit={handleCommentSubmit} className="mb-6">
+                    <div className="flex">
+                      <div className="flex-shrink-0 mr-3">
+                        <img className="h-10 w-10 rounded-full" src="https://via.placeholder.com/40" alt="User" />
+                      </div>
+                      <div className="flex-1">
+                        <textarea
+                          rows={3}
+                          className="shadow-sm block w-full focus:ring-blue-500 focus:border-blue-500 sm:text-sm border border-gray-300 rounded-md"
+                          placeholder="Add a comment..."
+                          value={comment}
+                          onChange={(e) => setComment(e.target.value)}
+                        />
+                        <div className="mt-2 flex justify-end">
+                          <button
+                            type="submit"
+                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                          >
+                            Post Comment
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+
+                  {/* Sample comments */}
+                  <div className="space-y-4">
+                    <div className="flex">
+                      <div className="flex-shrink-0 mr-3">
+                        <img className="h-10 w-10 rounded-full" src="https://via.placeholder.com/40" alt="User" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="bg-gray-50 p-3 rounded-lg">
+                          <div className="flex items-center justify-between">
+                            <h4 className="text-sm font-medium text-gray-900">John Doe</h4>
+                            <span className="text-xs text-gray-500">2 days ago</span>
+                          </div>
+                          <p className="mt-1 text-sm text-gray-700">This course is amazing! I learned so much about React components.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Rating section */}
+                {selectedCourse.enrolled && (
+                  <div className="p-6 border-t border-gray-200">
+                    <h3 className="text-lg font-medium text-gray-900 mb-4">Rate this course</h3>
+                    <form onSubmit={handleRatingSubmit}>
+                      <div className="flex items-center mb-4">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <button
+                            key={star}
+                            type="button"
+                            onClick={() => setRating(star)}
+                            className="focus:outline-none"
+                          >
+                            <FiStar
+                              className={`h-8 w-8 ${star <= rating ? 'text-yellow-400' : 'text-gray-300'}`}
+                            />
+                          </button>
+                        ))}
+                      </div>
+                      <button
+                        type="submit"
+                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        disabled={rating === 0}
+                      >
+                        Submit Rating
+                      </button>
+                    </form>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="bg-white rounded-lg shadow p-8 text-center">
+                <FiBookmark className="mx-auto h-12 w-12 text-gray-400" />
+                <h3 className="mt-2 text-lg font-medium text-gray-900">Select a course</h3>
+                <p className="mt-1 text-sm text-gray-500">Choose a course from the list to view details and start learning.</p>
+              </div>
+            )}
+          </div>
         </div>
-      )}
+      </main>
     </div>
   );
 };
 
-const CommentsSection = ({ lessonId, comments, onAddComment }) => {
-  const [commentText, setCommentText] = useState('');
-
-  const handleSubmit = () => {
-    if (commentText.trim() !== '') {
-      onAddComment(lessonId, commentText.trim());
-      setCommentText('');
-    }
-  };
-
-  return (
-    <div className="mt-6">
-      <h4 className="font-semibold mb-2">Comments</h4>
-      <ul className="mb-2 max-h-40 overflow-y-auto border border-gray-300 rounded p-2">
-        {comments.length === 0 && <li>No comments yet.</li>}
-        {comments.map((comment, index) => (
-          <li key={index} className="mb-1 border-b border-gray-200 pb-1">
-            {comment}
-          </li>
-        ))}
-      </ul>
-      <textarea
-        className="w-full border border-gray-300 rounded p-2 mb-2"
-        rows={3}
-        value={commentText}
-        onChange={(e) => setCommentText(e.target.value)}
-        placeholder="Add a comment..."
-      />
-      <button
-        className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition-colors duration-300"
-        onClick={handleSubmit}
-      >
-        Submit Comment
-      </button>
-    </div>
-  );
-};
-
-const RatingSection = ({ courseId, rating, onRate }) => {
-  const [currentRating, setCurrentRating] = useState(rating);
-
-  const handleRatingChange = (newRating) => {
-    setCurrentRating(newRating);
-    onRate(courseId, newRating);
-  };
-
-  return (
-    <div className="mt-6">
-      <h4 className="font-semibold mb-2">Rate this Course</h4>
-      <div className="flex space-x-1">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <Star
-            key={star}
-            filled={star <= currentRating}
-            onClick={() => handleRatingChange(star)}
-          />
-        ))}
-      </div>
-    </div>
-  );
-};
-
-const Star = ({ filled, onClick }) => (
-  <svg
-    onClick={onClick}
-    xmlns="http://www.w3.org/2000/svg"
-    fill={filled ? 'gold' : 'none'}
-    viewBox="0 0 24 24"
-    stroke="gold"
-    strokeWidth={2}
-    className="w-6 h-6 cursor-pointer"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.287 3.957c.3.921-.755 1.688-1.54 1.118l-3.37-2.448a1 1 0 00-1.175 0l-3.37 2.448c-.784.57-1.838-.197-1.539-1.118l1.287-3.957a1 1 0 00-.364-1.118L2.98 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.957z"
-    />
-  </svg>
-);
-
-export default StudentNew;
+export default Student;
