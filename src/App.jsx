@@ -3,11 +3,13 @@ import Login from './Pages/Login';
 import Signup from './Pages/Signup';
 import Owner from './Pages/owner';
 import Student from './Pages/Student';
+import Instructor from './Pages/Instructor';
 import { useState } from "react";
 import "./Index.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./components/Home";
+import 'react-tabs/style/react-tabs.css';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -22,6 +24,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/owner" element={<Owner />} />
           <Route path="/student" element={<Student />} />
+          <Route path="/instructor" element={<Instructor />} />
         </Routes>
       </div>
       <Footer />
