@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { auth, provider } from "../firebaseConfig";
+import { signInWithPopup } from "firebase/auth";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -14,6 +16,17 @@ const Login = () => {
     setMessage("Login functionality is disabled.");
   };
 
+  const handleGoogleSignIn = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      // You can get user info from result.user
+      navigate("./Student");
+    } catch (error) {
+      setMessage("Google sign-in failed. Please try again.");
+      console.error("Google sign-in error:", error);
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
       <h2 className="text-2xl font-bold mb-6">Sign In</h2>
@@ -23,6 +36,7 @@ const Login = () => {
       >
         <button
           type="button"
+          onClick={handleGoogleSignIn}
           className="w-full mb-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white py-2 rounded-md hover:from-cyan-600 hover:to-blue-600 transition"
         >
           Sign In using Google
