@@ -11,7 +11,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   // Hardcoded valid credentials for demonstration
-  const validEmail = "student@.com";
+  const validEmail = "student@gmail.com";
   const validPassword = "12345678";
 
   const handleSubmit = async (e) => {
