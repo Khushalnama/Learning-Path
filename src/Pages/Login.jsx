@@ -12,7 +12,7 @@ const Login = () => {
 
   // Hardcoded valid credentials for demonstration
   const validEmail = "student@gmail.com";
-  const validPassword = "12345678";
+  const validPassword = "123456";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,24 +29,16 @@ const Login = () => {
   const handleGoogleSignIn = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
-      // You can get user info from result.user
-      navigate("/Student");
+      const user = result.user;
+      console.log("User Info:", user);
+      // You can add navigation or other logic here if needed
     } catch (error) {
-      setMessage("Google sign-in failed. Please try again.");
-      console.error("Google sign-in error:", error);
+      console.error("Error signing in with Google", error);
     }
   };
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
-  };
-
-  const handleRegisterStudent = () => {
-    navigate("/Signup?userType=student");
-  };
-
-  const handleRegisterInstructor = () => {
-    navigate("/Signup?userType=instructor");
   };
 
   return (
@@ -59,15 +51,9 @@ const Login = () => {
         <button
           type="button"
           onClick={handleGoogleSignIn}
-          className="w-full mb-4 flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white py-2 rounded-md hover:from-cyan-600 hover:to-blue-600 transition"
+          className="w-full mb-4 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 48 48">
-            <path fill="#4285F4" d="M24 9.5c3.54 0 6.72 1.22 9.2 3.22l6.87-6.87C34.3 2.7 29.5 1 24 1 14.8 1 6.9 6.9 3.5 15.7l7.98 6.2C13.9 15.1 18.5 9.5 24 9.5z"/>
-            <path fill="#34A853" d="M46.5 24c0-1.6-.15-3.13-.43-4.6H24v9.2h12.7c-.55 3-2.2 5.5-4.7 7.2l7.2 5.6c4.2-3.9 6.6-9.6 6.6-17.4z"/>
-            <path fill="#FBBC05" d="M11.48 28.1c-.3-1-.5-2-.5-3.1s.2-2.1.5-3.1l-7.98-6.2C1.5 19.3 0 21.5 0 24s1.5 4.7 3.5 6.3l7.98-6.2z"/>
-            <path fill="#EA4335" d="M24 46.5c6.5 0 11.9-2.1 15.9-5.7l-7.2-5.6c-2 1.3-4.5 2-7 2-5.5 0-10.1-3.6-11.7-8.5l-8 6.2C6.9 41.1 14.8 46.5 24 46.5z"/>
-          </svg>
-          Sign In using Google
+          Sign in with Google
         </button>
         <p className="text-center mb-4">or sign in with your email</p>
         <div className="mb-4">
