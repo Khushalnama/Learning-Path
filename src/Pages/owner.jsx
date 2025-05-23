@@ -9,7 +9,7 @@ const Owner = () => {
   };
 
   const handleInstructorRegisterClick = () => {
-    navigate('/signup');
+    navigate('/Signupinstructor');
   };
 
   return (

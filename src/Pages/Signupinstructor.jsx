@@ -45,7 +45,7 @@ const Signup = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
-      <h2 className="text-2xl font-bold mb-6">Sign Up As a Student</h2>
+      <h2 className="text-2xl font-bold mb-6">Sign Up As a Instructor</h2>
       <form onSubmit={handleSubmit} className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg bg-white p-6 rounded-lg shadow-md">
         <button
           type="button"

@@ -10,6 +10,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./components/Home";
 import 'react-tabs/style/react-tabs.css';
+import Signupinstructor from './Pages/Signupinstructor'
 
 function App() {
   const [count, setCount] = useState(0);
@@ -25,6 +26,7 @@ function App() {
           <Route path="/owner" element={<Owner />} />
           <Route path="/student" element={<Student />} />
           <Route path="/instructor" element={<Instructor />} />
+          <Route path="/Signupinstructor" element={<Signupinstructor />} />
         </Routes>
       </div>
       <Footer />
