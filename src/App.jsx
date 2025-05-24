@@ -4,13 +4,13 @@ import Signup from './Pages/Signup';
 import Owner from './Pages/owner';
 import Student from './Pages/Student';
 import Instructor from './Pages/Instructor';
+import Home from './components/Home';
+import Signupinstructor from './Pages/Signupinstructor';
 import { useState } from "react";
 import "./Index.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import Home from "./components/Home";
 import 'react-tabs/style/react-tabs.css';
-import Signupinstructor from './Pages/Signupinstructor'
 
 function App() {
   const [count, setCount] = useState(0);

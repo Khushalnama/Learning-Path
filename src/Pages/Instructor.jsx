@@ -33,6 +33,85 @@ ChartJS.register(
   Legend
 );
 
+// Smaller components for Instructor page
+
+const CourseCard = ({ course, onEdit, onDelete }) => (
+  <div
+    className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+  >
+    <div className="flex justify-between items-start">
+      <div>
+        <h3 className="font-medium text-lg">{course.title}</h3>
+        <p className="text-gray-600 text-sm mt-1">{course.description}</p>
+        <div className="flex items-center mt-2 space-x-4">
+          <span className="text-sm text-gray-500">${course.price}</span>
+          <span className="text-sm text-gray-500">{course.students} students</span>
+          <span className="text-sm text-gray-500">{course.videos.length} videos</span>
+        </div>
+      </div>
+      <div className="flex space-x-2">
+        <button
+          onClick={() => onEdit(course)}
+          className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-full"
+        >
+          <FiEdit2 size={18} />
+        </button>
+        <button
+          onClick={() => onDelete(course.id)}
+          className="p-2 text-red-600 hover:bg-red-50 rounded-full"
+        >
+          <FiTrash2 size={18} />
+        </button>
+      </div>
+    </div>
+  </div>
+);
+
+const QuizQuestion = ({ quiz, index }) => (
+  <div key={index} className="border border-gray-200 rounded-lg p-4">
+    <p className="font-medium">{quiz.question}</p>
+    <ul className="list-disc list-inside mt-2">
+      {quiz.options.map((option, i) => (
+        <li
+          key={i}
+          className={i === quiz.correctAnswer ? "font-bold text-green-600" : ""}
+        >
+          {option}
+        </li>
+      ))}
+    </ul>
+  </div>
+);
+
+const StudentRow = ({ student }) => (
+  <tr className="hover:bg-gray-50">
+    <td className="px-6 py-4 whitespace-nowrap">
+      <div className="flex items-center">
+        <div className="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
+          <span className="text-indigo-600 font-medium">{student.name.charAt(0)}</span>
+        </div>
+        <div className="ml-4">
+          <div className="text-sm font-medium text-gray-900">{student.name}</div>
+        </div>
+      </div>
+    </td>
+    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{student.email}</td>
+    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{student.enrolled}</td>
+    <td className="px-6 py-4 whitespace-nowrap">
+      <div className="flex flex-wrap gap-1">
+        {student.courses.map((course, index) => (
+          <span
+            key={index}
+            className="px-2 py-1 text-xs rounded-full bg-indigo-100 text-indigo-800"
+          >
+            {course}
+          </span>
+        ))}
+      </div>
+    </td>
+  </tr>
+);
+
 const InstructorDashboard = () => {
   const [courses, setCourses] = useState([]);
   const [newCourse, setNewCourse] = useState({
@@ -54,9 +133,7 @@ const InstructorDashboard = () => {
     correctAnswer: 0,
   });
 
-  // Sample data initialization
   useEffect(() => {
-    // Mock courses data
     setCourses([
       {
         id: 1,
@@ -80,7 +157,6 @@ const InstructorDashboard = () => {
       },
     ]);
 
-    // Mock students data
     setStudents([
       {
         id: 1,
@@ -105,7 +181,6 @@ const InstructorDashboard = () => {
       },
     ]);
 
-    // Mock revenue data
     setRevenueData({
       labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
       datasets: [
@@ -123,7 +198,6 @@ const InstructorDashboard = () => {
   const handleCourseSubmit = (e) => {
     e.preventDefault();
     if (editingCourseId) {
-      // Update existing course
       setCourses(
         courses.map((course) =>
           course.id === editingCourseId
@@ -133,7 +207,6 @@ const InstructorDashboard = () => {
       );
       setEditingCourseId(null);
     } else {
-      // Add new course
       const newCourseWithId = {
         ...newCourse,
         id: courses.length + 1,
@@ -172,13 +245,11 @@ const InstructorDashboard = () => {
     setIsUploading(true);
     setUploadProgress(0);
 
-    // Simulate upload progress
     const interval = setInterval(() => {
       setUploadProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
           setIsUploading(false);
-          // Add the video to the first course for demo purposes
           if (courses.length > 0) {
             setCourses(
               courses.map((course, index) =>
@@ -236,7 +307,6 @@ const InstructorDashboard = () => {
             </Tab>
           </TabList>
 
-          {/* Courses Tab */}
           <TabPanel>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
               <div className="lg:col-span-2">
@@ -249,46 +319,12 @@ const InstructorDashboard = () => {
                   ) : (
                     <div className="space-y-4">
                       {courses.map((course) => (
-                        <div
+                        <CourseCard
                           key={course.id}
-                          className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-                        >
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <h3 className="font-medium text-lg">
-                                {course.title}
-                              </h3>
-                              <p className="text-gray-600 text-sm mt-1">
-                                {course.description}
-                              </p>
-                              <div className="flex items-center mt-2 space-x-4">
-                                <span className="text-sm text-gray-500">
-                                  ${course.price}
-                                </span>
-                                <span className="text-sm text-gray-500">
-                                  {course.students} students
-                                </span>
-                                <span className="text-sm text-gray-500">
-                                  {course.videos.length} videos
-                                </span>
-                              </div>
-                            </div>
-                            <div className="flex space-x-2">
-                              <button
-                                onClick={() => handleEditCourse(course)}
-                                className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-full"
-                              >
-                                <FiEdit2 size={18} />
-                              </button>
-                              <button
-                                onClick={() => handleDeleteCourse(course.id)}
-                                className="p-2 text-red-600 hover:bg-red-50 rounded-full"
-                              >
-                                <FiTrash2 size={18} />
-                              </button>
-                            </div>
-                          </div>
-                        </div>
+                          course={course}
+                          onEdit={handleEditCourse}
+                          onDelete={handleDeleteCourse}
+                        />
                       ))}
                     </div>
                   )}
@@ -400,7 +436,6 @@ const InstructorDashboard = () => {
             </div>
           </TabPanel>
 
-          {/* Upload Videos Tab */}
           <TabPanel>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
               <div className="lg:col-span-2">
@@ -474,7 +509,6 @@ const InstructorDashboard = () => {
             </div>
           </TabPanel>
 
-          {/* Quizzes Tab */}
           <TabPanel>
             <div className="bg-white rounded-lg shadow p-6 mt-6">
               <h2 className="text-xl font-semibold mb-4">Quizzes</h2>
@@ -483,34 +517,13 @@ const InstructorDashboard = () => {
                   <p className="text-gray-500">No quizzes added yet.</p>
                 ) : (
                   quizQuestions.map((quiz, index) => (
-                    <div
-                      key={index}
-                      className="border border-gray-200 rounded-lg p-4"
-                    >
-                      <p className="font-medium">{quiz.question}</p>
-                      <ul className="list-disc list-inside mt-2">
-                        {quiz.options.map((option, i) => (
-                          <li
-                            key={i}
-                            className={
-                              i === quiz.correctAnswer
-                                ? "font-bold text-green-600"
-                                : ""
-                            }
-                          >
-                            {option}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                    <QuizQuestion key={index} quiz={quiz} index={index} />
                   ))
                 )}
               </div>
 
               <div className="mt-6">
-                <h3 className="text-lg font-semibold mb-2">
-                  Add New Quiz Question
-                </h3>
+                <h3 className="text-lg font-semibold mb-2">Add New Quiz Question</h3>
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -550,9 +563,7 @@ const InstructorDashboard = () => {
                           <input
                             type="text"
                             value={option}
-                            onChange={(e) =>
-                              updateOptionText(index, e.target.value)
-                            }
+                            onChange={(e) => updateOptionText(index, e.target.value)}
                             className="ml-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 flex-grow"
                             placeholder={`Option ${index + 1}`}
                           />
@@ -564,12 +575,10 @@ const InstructorDashboard = () => {
                     type="button"
                     onClick={addQuizQuestion}
                     disabled={
-                      !newQuestion.question ||
-                      newQuestion.options.some((opt) => !opt)
+                      !newQuestion.question || newQuestion.options.some((opt) => !opt)
                     }
                     className={`w-full py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                      !newQuestion.question ||
-                      newQuestion.options.some((opt) => !opt)
+                      !newQuestion.question || newQuestion.options.some((opt) => !opt)
                         ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                         : "bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500"
                     }`}
@@ -584,14 +593,11 @@ const InstructorDashboard = () => {
             </div>
           </TabPanel>
 
-          {/* Students Tab */}
           <TabPanel>
             <div className="mt-6">
               <div className="bg-white rounded-lg shadow overflow-hidden">
                 <div className="p-6">
-                  <h2 className="text-xl font-semibold mb-4">
-                    Enrolled Students
-                  </h2>
+                  <h2 className="text-xl font-semibold mb-4">Enrolled Students</h2>
                   <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
                       <thead className="bg-gray-50">
@@ -624,40 +630,7 @@ const InstructorDashboard = () => {
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-200">
                         {students.map((student) => (
-                          <tr key={student.id} className="hover:bg-gray-50">
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex items-center">
-                                <div className="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                                  <span className="text-indigo-600 font-medium">
-                                    {student.name.charAt(0)}
-                                  </span>
-                                </div>
-                                <div className="ml-4">
-                                  <div className="text-sm font-medium text-gray-900">
-                                    {student.name}
-                                  </div>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {student.email}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {student.enrolled}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex flex-wrap gap-1">
-                                {student.courses.map((course, index) => (
-                                  <span
-                                    key={index}
-                                    className="px-2 py-1 text-xs rounded-full bg-indigo-100 text-indigo-800"
-                                  >
-                                    {course}
-                                  </span>
-                                ))}
-                              </div>
-                            </td>
-                          </tr>
+                          <StudentRow key={student.id} student={student} />
                         ))}
                       </tbody>
                     </table>
@@ -667,9 +640,7 @@ const InstructorDashboard = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <div className="bg-white rounded-lg shadow p-6">
-                  <h2 className="text-xl font-semibold mb-4">
-                    Student Enrollment
-                  </h2>
+                  <h2 className="text-xl font-semibold mb-4">Student Enrollment</h2>
                   <div className="h-64">
                     <Bar
                       data={{
@@ -700,9 +671,7 @@ const InstructorDashboard = () => {
                   </div>
                 </div>
                 <div className="bg-white rounded-lg shadow p-6">
-                  <h2 className="text-xl font-semibold mb-4">
-                    Top Courses by Enrollment
-                  </h2>
+                  <h2 className="text-xl font-semibold mb-4">Top Courses by Enrollment</h2>
                   <div className="space-y-3">
                     {[...courses]
                       .sort((a, b) => b.students - a.students)
@@ -713,9 +682,7 @@ const InstructorDashboard = () => {
                           </span>
                           <div className="flex-grow">
                             <div className="flex justify-between text-sm">
-                              <span className="font-medium">
-                                {course.title}
-                              </span>
+                              <span className="font-medium">{course.title}</span>
                               <span>{course.students} students</span>
                             </div>
                             <div className="w-full bg-gray-200 rounded-full h-1.5 mt-1">
@@ -724,9 +691,7 @@ const InstructorDashboard = () => {
                                 style={{
                                   width: `${
                                     (course.students /
-                                      Math.max(
-                                        ...courses.map((c) => c.students)
-                                      )) *
+                                      Math.max(...courses.map((c) => c.students))) *
                                     100
                                   }%`,
                                 }}
@@ -741,202 +706,36 @@ const InstructorDashboard = () => {
             </div>
           </TabPanel>
 
-          {/* Revenue Tab */}
           <TabPanel>
-            <div className="mt-6">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="bg-white rounded-lg shadow p-6 lg:col-span-2">
-                  <h2 className="text-xl font-semibold mb-4">
-                    Revenue Overview
-                  </h2>
-                  <div className="h-80">
-                    <Line
-                      data={revenueData}
-                      options={{
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                          y: {
-                            beginAtZero: true,
-                            ticks: {
-                              callback: function (value) {
-                                return "$" + value;
-                              },
-                            },
+            <div className="bg-white rounded-lg shadow p-6 lg:col-span-2 mt-6">
+              <h2 className="text-xl font-semibold mb-4">Revenue Overview</h2>
+              <div className="h-80">
+                <Line
+                  data={revenueData}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                      y: {
+                        beginAtZero: true,
+                        ticks: {
+                          callback: function (value) {
+                            return "$" + value;
                           },
                         },
-                        plugins: {
-                          tooltip: {
-                            callbacks: {
-                              label: function (context) {
-                                return "$" + context.parsed.y;
-                              },
-                            },
+                      },
+                    },
+                    plugins: {
+                      tooltip: {
+                        callbacks: {
+                          label: function (context) {
+                            return "$" + context.parsed.y;
                           },
                         },
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-lg shadow p-6">
-                  <h2 className="text-xl font-semibold mb-4">
-                    Revenue Summary
-                  </h2>
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center p-4 bg-indigo-50 rounded-lg">
-                      <div>
-                        <p className="text-sm text-indigo-600">Total Revenue</p>
-                        <p className="text-2xl font-bold text-gray-800">
-                          $
-                          {courses
-                            .reduce((sum, course) => sum + course.revenue, 0)
-                            .toFixed(2)}
-                        </p>
-                      </div>
-                      <div className="p-3 rounded-full bg-indigo-100 text-indigo-600">
-                        <FiDollarSign size={24} />
-                      </div>
-                    </div>
-
-                    <div className="space-y-3">
-                      <h3 className="font-medium">Revenue by Course</h3>
-                      {courses
-                        .sort((a, b) => b.revenue - a.revenue)
-                        .map((course) => (
-                          <div
-                            key={course.id}
-                            className="flex items-center justify-between"
-                          >
-                            <span className="text-sm">{course.title}</span>
-                            <span className="font-medium">
-                              ${course.revenue.toFixed(2)}
-                            </span>
-                          </div>
-                        ))}
-                    </div>
-
-                    <div className="pt-4 border-t border-gray-200">
-                      <h3 className="font-medium mb-2">Estimated Payout</h3>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm">Next payout date:</span>
-                        <span className="text-sm font-medium">
-                          15th of next month
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center mt-1">
-                        <span className="text-sm">Amount:</span>
-                        <span className="text-lg font-bold text-indigo-600">
-                          $
-                          {(
-                            courses.reduce(
-                              (sum, course) => sum + course.revenue,
-                              0
-                            ) * 0.7
-                          ).toFixed(2)}
-                        </span>
-                      </div>
-                      <p className="text-xs text-gray-500 mt-2">
-                        *70% after platform fees
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                <div className="bg-white rounded-lg shadow p-6">
-                  <h2 className="text-xl font-semibold mb-4">
-                    Recent Transactions
-                  </h2>
-                  <div className="space-y-4">
-                    {students.slice(0, 3).map((student) => (
-                      <div
-                        key={student.id}
-                        className="flex items-center justify-between p-3 border border-gray-100 rounded-lg"
-                      >
-                        <div className="flex items-center">
-                          <div className="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center mr-3">
-                            <span className="text-indigo-600 font-medium">
-                              {student.name.charAt(0)}
-                            </span>
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium">
-                              {student.name}
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              {student.courses.join(", ")}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-sm font-medium text-indigo-600">
-                            $
-                            {courses
-                              .find((c) => c.title === student.courses[0])
-                              ?.price.toFixed(2) || "0.00"}
-                          </p>
-                          <p className="text-xs text-gray-500">1 day ago</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-lg shadow p-6">
-                  <h2 className="text-xl font-semibold mb-4">Revenue Goals</h2>
-                  <div className="space-y-4">
-                    <div>
-                      <div className="flex justify-between mb-1">
-                        <span className="text-sm font-medium">
-                          Monthly Target
-                        </span>
-                        <span className="text-sm font-medium">
-                          $2,500/$5,000
-                        </span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2.5">
-                        <div
-                          className="bg-indigo-600 h-2.5 rounded-full"
-                          style={{ width: "50%" }}
-                        ></div>
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex justify-between mb-1">
-                        <span className="text-sm font-medium">
-                          Quarterly Target
-                        </span>
-                        <span className="text-sm font-medium">
-                          $7,800/$15,000
-                        </span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2.5">
-                        <div
-                          className="bg-indigo-600 h-2.5 rounded-full"
-                          style={{ width: "52%" }}
-                        ></div>
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex justify-between mb-1">
-                        <span className="text-sm font-medium">
-                          Annual Target
-                        </span>
-                        <span className="text-sm font-medium">
-                          $28,500/$60,000
-                        </span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2.5">
-                        <div
-                          className="bg-indigo-600 h-2.5 rounded-full"
-                          style={{ width: "47.5%" }}
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                      },
+                    },
+                  }}
+                />
               </div>
             </div>
           </TabPanel>

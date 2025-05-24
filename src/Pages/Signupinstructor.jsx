@@ -28,8 +28,27 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
-    // Removed backend API call as per request to delete backend in frontend
-    setMessage('Signup functionality is disabled.');
+    try {
+      const response = await fetch('http://localhost:3001/signup-instructor', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setMessage('Instructor created successfully. Redirecting to login...');
+        setTimeout(() => {
+          navigate('/login');
+        }, 2000);
+      } else {
+        setMessage(data.message || 'Signup failed. Please try again.');
+      }
+    } catch (error) {
+      setMessage('Error connecting to server. Please try again later.');
+      console.error('Signup error:', error);
+    }
   };
 
   const handleGoogleSignUp = async () => {
